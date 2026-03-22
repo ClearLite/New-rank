@@ -1,0 +1,35 @@
+<!-- templates/detail.html -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<div style="display: flex; gap: 20px; background: var(--card-bg); padding: 20px; border-radius: 10px;">
+    <img src="{{ media.poster_url }}" style="width: 250px; border-radius: 10px;">
+    <div>
+        <h1>{{ media.title }} 
+            <span class="tag-{{ get_media_color(media.media_type) }}" style="font-size: 16px; padding: 4px 8px; border-radius: 4px;">
+                {{ media.media_type }}
+            </span>
+        </h1>
+        <p>Year: {{ media.release_year }}</p>
+        
+        <!-- Main Score -->
+        <div class="rating-box tag-{{ get_media_color(media.media_type) }} {% if is_legendary(media.media_type, media.score) %}legendary-border{% endif %}" style="font-size: 24px;">
+            {{ media.score }}
+        </div>
+
+        {% if session['admin'] %}
+            <button style="margin-top: 20px; background: #007bff; color: white; border: none; padding: 10px; cursor: pointer;">Edit Info</button>
+        {% endif %}
+    </div>
+</div>
+
+<h3>Parts / Episodes / Songs</h3>
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    {% for sub in sub_items %}
+    <!-- Box with Tooltip on Hover -->
+    <div class="rating-box tag-{{ get_media_color(sub.sub_type) }} {% if is_legendary(sub.sub_type, sub.score) %}legendary-border{% endif %}">
+        {{ sub.score }}
+        <!-- This is the hidden title that appears on hover! -->
+        <span class="tooltiptext">Part {{ sub.number }}: {{ sub.title }}</span>
+    </div>
+    {% endfor %}
+</div>

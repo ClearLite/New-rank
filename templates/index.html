@@ -1,8 +1,7 @@
-<!-- templates/index.html -->
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% extends 'base.html' %}
 
-<nav>
-    <h2>Ryan's Media Rankings</h2>
+{% block content %}
+<div class="filter-form">
     <form action="/" method="GET">
         <select name="filter" onchange="this.form.submit()">
             <option value="All">All Types</option>
@@ -10,38 +9,51 @@
             <option value="TV Show" {% if filter_type == 'TV Show' %}selected{% endif %}>TV Shows</option>
             <option value="Videogame" {% if filter_type == 'Videogame' %}selected{% endif %}>Videogames</option>
             <option value="Album" {% if filter_type == 'Album' %}selected{% endif %}>Albums</option>
-            <option value="Single" {% if filter_type == 'Single' %}selected{% endif %}>Singles</option>
             <option value="Songs" {% if filter_type == 'Songs' %}selected{% endif %}>All Songs</option>
         </select>
     </form>
-    {% if session['admin'] %}
-        <a href="/logout">Logout Admin</a>
-    {% else %}
-        <a href="/login">Login</a>
-    {% endif %}
-</nav>
+</div>
 
-<div class="grid">
-    {% for item in media_items %}
-    
-    <!-- Wrapper to apply the rainbow border ONLY if legendary -->
-    <div class="{% if is_legendary(item.media_type, item.score) %}legendary-border{% endif %}">
-        <a href="/media/{{ item.id }}" style="text-decoration: none; color: inherit;">
-            <div class="card">
-                <img src="{{ item.poster_url or 'https://via.placeholder.com/200x300' }}" alt="Poster">
-                <div class="card-info">
-                    <h4>{{ item.title }}</h4>
-                    <span style="font-size: 12px; color: var(--text-muted);">{{ item.release_year }}</span>
-                    <br>
-                    <!-- Apply Blue/Green/Red/Purple/Yellow based on type -->
-                    <span style="font-size: 12px; padding: 2px 6px; border-radius: 4px;" 
-                          class="tag-{{ get_media_color(item.media_type) }}">
-                        {{ item.media_type }}
-                    </span>
-                    <h3 style="margin: 5px 0;">⭐ {{ item.score }}</h3>
-                </div>
-            </div>
-        </a>
+<div class="legend-container">
+    <div class="legend-section-title">Media Types</div>
+    <div class="type-legend">
+        <div class="legend-item"><span class="legend-color-box legend-movie"></span> Movie</div>
+        <div class="legend-item"><span class="legend-color-box legend-tv"></span> TV Show</div>
+        <div class="legend-item"><span class="legend-color-box legend-album"></span> Album</div>
+        <div class="legend-item"><span class="legend-color-box legend-single"></span> Single / Song</div>
+        <div class="legend-item"><span class="legend-color-box legend-purple"></span> Videogame</div>
     </div>
+    
+    <div class="legend-section-title">Rating Score Guide</div>
+    <div class="rating-legend">
+        <div class="legend-entry"><div class="legend-box awesome">9.0+</div><span class="legend-label">Awesome</span></div>
+        <div class="legend-entry"><div class="legend-box great">8.0+</div><span class="legend-label">Great (8.0 - 8.9)</span></div>
+        <div class="legend-entry"><div class="legend-box good">7.0+</div><span class="legend-label">Good (7.0 - 7.9)</span></div>
+        <div class="legend-entry"><div class="legend-box okay">6.0+</div><span class="legend-label">Okay (6.0 - 6.9)</span></div>
+        <div class="legend-entry"><div class="legend-box bad">5.0+</div><span class="legend-label">Bad (5.0 - 5.9)</span></div>
+        <div class="legend-entry"><div class="legend-box garbage"><5</div><span class="legend-label">Garbage</span></div>
+        <div class="legend-entry"><div class="legend-box legendary"></div><span class="legend-label">Rainbow (See Rules)</span></div>
+    </div>
+</div>
+
+<div class="media-grid">
+    {% for item in media_items %}
+    <!-- Magic happens here: if legendary, it applies 'legendary-card' for the border -->
+    <a href="/media/{{ item.id }}" class="media-card {% if is_legendary(item.media_type, item.score) %}legendary-card{% endif %}">
+        <div class="media-card-inner">
+            <div class="media-card-poster">
+                <img src="{{ item.poster_url or 'https://via.placeholder.com/200x300' }}" alt="Poster">
+            </div>
+            <!-- Dynamic Background Gradients -->
+            <div class="media-card-info" style="background: linear-gradient(180deg, rgba(var(--{{ get_media_class(item.media_type) }}-rgb), 0.35) 0%, var(--card-color) 100%);">
+                <h3>{{ item.title }}</h3>
+                <p class="creator">{{ item.release_year }}</p>
+                <!-- Dynamic Text Background Color -->
+                <span class="tag-badge" style="background-color: var(--{{ get_media_class(item.media_type) }}-accent); font-size: 10px;">{{ item.media_type }}</span>
+                <p class="score" style="margin-top: 5px;">⭐ {{ item.score }}</p>
+            </div>
+        </div>
+    </a>
     {% endfor %}
 </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+<!-- templates/add.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+    <div class="card" style="padding: 30px; width: 100%; max-width: 400px; text-align: center;">
+        <h2>Auto-Add from Internet</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">This will pull High-Quality posters, genres, studios, and release years automatically.</p>
+        
+        <form action="/add" method="POST" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <input type="text" name="title" placeholder="Enter Title (e.g., Loki)" required 
+                   style="padding: 10px; border-radius: 5px; border: 1px solid #333; background: #121212; color: white;">
+                   
+            <select name="category" required style="padding: 10px; border-radius: 5px; border: 1px solid #333; background: #121212; color: white;">
+                <option value="Movie">Movie</option>
+                <option value="TV Show">TV Show</option>
+                <option value="Videogame">Videogame</option>
+                <option value="Album">Album</option>
+            </select>
+                   
+            <button type="submit" 
+                    style="background: var(--color-blue); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                Search & Add
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

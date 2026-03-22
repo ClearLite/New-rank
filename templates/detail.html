@@ -1,35 +1,36 @@
-<!-- templates/detail.html -->
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% extends 'base.html' %}
 
-<div style="display: flex; gap: 20px; background: var(--card-bg); padding: 20px; border-radius: 10px;">
-    <img src="{{ media.poster_url }}" style="width: 250px; border-radius: 10px;">
-    <div>
-        <h1>{{ media.title }} 
-            <span class="tag-{{ get_media_color(media.media_type) }}" style="font-size: 16px; padding: 4px 8px; border-radius: 4px;">
-                {{ media.media_type }}
-            </span>
-        </h1>
-        <p>Year: {{ media.release_year }}</p>
+{% block content %}
+<div class="header-card" style="border-top: 4px solid var(--{{ get_media_class(media.media_type) }}-accent);">
+    <div class="poster">
+        <img src="{{ media.poster_url }}">
+    </div>
+    <div class="title-info">
+        <h1>{{ media.title }}</h1>
+        <div class="tag-badge-container">
+            <span class="tag-badge" style="background: var(--{{ get_media_class(media.media_type) }}-accent)">{{ media.media_type }}</span>
+            {% for genre in media.genres %}
+                <span class="tag-badge">{{ genre.name }}</span>
+            {% endfor %}
+        </div>
+        <p class="years">Released: {{ media.release_year }}</p>
         
-        <!-- Main Score -->
-        <div class="rating-box tag-{{ get_media_color(media.media_type) }} {% if is_legendary(media.media_type, media.score) %}legendary-border{% endif %}" style="font-size: 24px;">
+        <p style="color: #aaa; margin-bottom: 5px;">Official Score</p>
+        <!-- Large Score Box that turns Rainbow if Legendary! -->
+        <div class="legend-box {% if is_legendary(media.media_type, media.score) %}legendary{% else %}{{ get_score_class(media.score) }}{% endif %}" style="width: 80px; height: 60px; font-size: 30px;">
             {{ media.score }}
         </div>
-
-        {% if session['admin'] %}
-            <button style="margin-top: 20px; background: #007bff; color: white; border: none; padding: 10px; cursor: pointer;">Edit Info</button>
-        {% endif %}
     </div>
 </div>
 
-<h3>Parts / Episodes / Songs</h3>
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Parts / Episodes / Songs</h2>
+<div class="ratings-grid">
     {% for sub in sub_items %}
-    <!-- Box with Tooltip on Hover -->
-    <div class="rating-box tag-{{ get_media_color(sub.sub_type) }} {% if is_legendary(sub.sub_type, sub.score) %}legendary-border{% endif %}">
+    <!-- These are the small hover boxes from the Loki image -->
+    <div class="rating-item {% if is_legendary(sub.sub_type, sub.score) %}legendary{% else %}{{ get_score_class(sub.score) }}{% endif %}" 
+         data-title="Part {{ sub.number }}: {{ sub.title }}">
         {{ sub.score }}
-        <!-- This is the hidden title that appears on hover! -->
-        <span class="tooltiptext">Part {{ sub.number }}: {{ sub.title }}</span>
     </div>
     {% endfor %}
 </div>
+{% endblock %}

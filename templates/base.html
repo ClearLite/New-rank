@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryan's Media Rankings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Shared Navigation Bar -->
+    <nav style="display: flex; justify-content: space-between; align-items: center; background: #1e1e1e; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="margin: 0;">
+            <a href="/" style="color: white; text-decoration: none;">Ryan's Media Rankings</a>
+        </h2>
+        
+        <div style="display: flex; gap: 15px; align-items: center;">
+            {% if session.get('admin') %}
+                <span style="color: #00ff00;">Logged in as Admin</span>
+                <!-- Button to trigger the "Add from Internet" modal/page -->
+                <button style="background: var(--color-blue); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">+ Add Media</button>
+                <a href="/logout" style="color: #ff4444; text-decoration: none;">Logout</a>
+            {% else %}
+                <a href="/login" style="color: white; text-decoration: none;">Admin Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- This is where index.html, detail.html, and login.html will inject their content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>
